@@ -1,23 +1,47 @@
 /*
- * @Author: Yang Rui
- * @Date: 2021-01-02 11:17:06
- * @LastEditTime: 2021-01-02 11:23:14
+ * @Author: YangRui
+ * @Date: 2021-01-02 12:04:43
+ * @LastEditTime: 2021-01-02 12:29:51
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
- * @FilePath: /jsPrac/concurrencyControl/cc.js
+ * @FilePath: /jsprac/ConcurrencyControl/cc.js
  */
-//模拟异步执行代码，比如网络请求
-const task = (timeout) =>
-  new Promise((res) => {
-    setTimeout(() => {
-      res(timeout);
-    }, timeout);
-  });
-
-const taskList = [1000, 3000, 200, 1300, 800, 2000];
-
-(async () => {
-  console.time("TimeStart");
-  await Promise.all(taskList.map((item) => task(item)));
-  console.timeEnd("TimeStart");
-})();
+export default function TaskPool(size) {
+  this.size = size;
+  this.queue = [];
+  const DelayedTask = function (resolve, fn, args) {
+    this.resolve = resolve;
+    this.fn = fn;
+    this.args = args;
+  };
+  this.addTask = (fn) => (...args) =>
+    new Promise((resolve) => {
+      this.queue.push(new DelayedTask(resolve, fn, args));
+      if (this.size !== 0) {
+        this.size--;
+        const { resolve, fn, args } = this.queue.shift();
+        resolve(this.runTask(fn, args));
+      }
+    });
+  this.pullTask = () => {
+    if (this.queue.length === 0) return;
+    if (this.size === 0) return;
+    this.size++;
+    const { resolve, fn, args } = this.queue.shift();
+    resolve(this.runTask(fn, args));
+  };
+  this.runTask = (fn, args) => {
+    const result = Promise.resolve(fn(...args));
+    //TODO
+    result
+      .then(() => {
+        this.size--;
+        this.pullTask();
+      })
+      .catch(() => {
+        this.size--;
+        this.pullTask();
+      });
+    return result;
+  };
+}
