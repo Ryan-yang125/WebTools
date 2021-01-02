@@ -1,9 +1,9 @@
 /*
- * @Author: YangRui
+ * @Author: Yang Rui
  * @Date: 2021-01-02 12:04:43
- * @LastEditTime: 2021-01-02 12:29:51
+ * @LastEditTime: 2021-01-02 17:25:00
  * @LastEditors: Please set LastEditors
- * @Description: In User Settings Edit
+ * @Description: A ConcurrencyControler
  * @FilePath: /jsprac/ConcurrencyControl/cc.js
  */
 export default function TaskPool(size) {
@@ -14,6 +14,7 @@ export default function TaskPool(size) {
     this.fn = fn;
     this.args = args;
   };
+  //Curring!
   this.addTask = (fn) => (...args) =>
     new Promise((resolve) => {
       this.queue.push(new DelayedTask(resolve, fn, args));
