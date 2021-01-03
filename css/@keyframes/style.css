@@ -1,0 +1,20 @@
+/* div */
+.loading-css {
+  width: 50px;
+  height: 50px;
+  /* display: inline-block; */
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid red;
+  border-radius: 50%;
+}
+@keyframes loading-360 {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.loading-css {
+  animation: 0.8s infinite linear loading-360;
+}
