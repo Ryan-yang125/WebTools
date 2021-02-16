@@ -16,6 +16,9 @@ function curry(fn) {
     return fn.apply(null, Array.prototype.slice.call(arguments, 1));
   }
 }
+//one line
+const _curr = (fn, ...args) =>
+  args.length < fn.length ? _curry.bind(null, fn, ...args) : fn(...args);
 //完整版 可以使用 '_'占位符号
 const sum = (a, b, c) => a + b + c;
 const curriedSum = curry(sum);
