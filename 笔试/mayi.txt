@@ -1,0 +1,172 @@
+// 1 debounce
+// 题目 1: debounce 的简单实现
+
+function debounce(func, duration) {
+  let timeout = null;
+
+  function debounced() {
+    if (!timeout) clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      func.apply(this, arguments);
+    }, duration);
+  }
+
+  debounce.cancel = () => {
+    clearTimeout(timeout);
+    timeout = null;
+  };
+
+  return debounced;
+}
+
+// ======================================================
+
+// 题目 2：实现一个 convert 函数, 接收一个10进制整数n (n >= 0)，转化为7进制数（用字符串表示）。例如 7转化为'10'，2019转化为'5613'。
+
+function convent(n) {
+  if (typeof n !== "number" || n < 0) {
+    return null;
+  }
+  let scale = 7;
+  let ans = 0;
+  let base = 1;
+
+  while (n) {
+    ans += (n % scale) * base;
+    base *= 10;
+    n = ~~(n / scale);
+  }
+
+  return "" + ans;
+}
+// console.log(convent(2019));
+// console.log(convent(7));
+
+// ======================================================
+
+/* 题目 3：parseBytes 的实现，将一个表示文件大小的字符串转换成最终的数字，这个数字表示文件的 byte 数。
+
+
+
+举例：
+
+
+
+parseBytes(‘123’); // 123
+
+parseBytes(‘1.2 Kb’); // 1.2 * 1024
+
+parseBytes(‘1.2 Mb’); // 1.2 * 1024 * 1024
+
+parseBytes(‘1.2 Gb’); // 1.2 * 1024 * 1024 * 1024
+
+
+
+*/
+
+function parseBytes(str) {
+  let byteSize = {
+    K: 10,
+    M: 20,
+    G: 30,
+    T: 40,
+    P: 50,
+    E: 60,
+  };
+
+  let spaceIndex = str.indexOf(" ");
+  let number = +str.slice(0, spaceIndex);
+  let scale = str[spaceIndex + 1];
+
+  return number * Math.pow(2, byteSize[scale]);
+}
+// console.log(parseBytes("1.2 Gb"));
+
+// ======================================================
+
+// 题目 4：实现算法
+
+/**
+
+ * 检测一个有向图是否存在环。
+
+ * @param edges 二维数组，数组中的元素为 [source, target]
+
+ */
+
+function hasCircle(edges) {
+  // implement the graph
+  let inDegree = {};
+
+  for (const [s, t] of edges) {
+    if (!inDegree[s]) {
+      inDegree[s] = 0;
+    }
+    if (!inDegree[t]) {
+      inDegree[t] = 1;
+    } else {
+      inDegree[t] += 1;
+    }
+  }
+
+  let queue = [];
+
+  Object.keys(inDegree).forEach((vertex) => {
+    if (inDegree[vertex] === 0) {
+      queue.push(vertex);
+    }
+  });
+
+  let cnt = 0;
+  while (queue.length) {
+    let front = queue.shift();
+    cnt += 1;
+    for (const [s, t] of edges) {
+      if (front === s) {
+        inDegree[t] -= 1;
+        if (inDegree[t] === 0) {
+          queue.push(t);
+        }
+      }
+    }
+  }
+
+  return cnt !== Object.keys(inDegree).length;
+}
+
+// 测试代码 ==> vertex + edge
+
+hasCircle([
+  ["a", "b"],
+
+  ["b", "c"],
+]); // return false
+hasCircle([
+  ["a", "b"],
+
+  ["b", "c"],
+
+  ["c", "a"],
+]); // return true
+
+// ======================================================
+
+// 题目 5：实现类似 python 数组分片语法
+
+function slice(arr) {
+  let sliceObj = {};
+  let length = arr.length;
+
+  for (let i = 0; i <= length; i++) {
+    for (let j = 0; j <= length; j++) {
+      sliceObj[`${i}:${j}`] = arr.slice(i, j);
+    }
+  }
+
+  return sliceObj;
+}
+
+const arr = slice([1, "2", 3, "4", 5, "6", 7, "8", 9, "0"]);
+
+arr["2:5"]; // [3, '4', 5]
+// console.log(arr["2:5"]);
