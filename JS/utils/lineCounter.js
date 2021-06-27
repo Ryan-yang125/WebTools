@@ -28,7 +28,12 @@ const patterns = [
     const result = {};
     let totalN = 0;
 
-    const dfs = sub => {
+    const dfs = (sub,depth, depthNow=0) => {
+
+        if (depthNow > depth) {
+            return;
+        }
+
         const filePath = path.join(__dirname, sub);
 
         if (!fs.existsSync(filePath)) {
@@ -36,7 +41,7 @@ const patterns = [
         }
 
         if (isSubFolder(filePath)) {
-            fs.readdirSync(filePath).forEach(file => dfs(path.join(sub, file)));
+            fs.readdirSync(filePath).forEach(file => dfs(path.join(sub, file), depth, depthNow+1));
         } else {
             if (isMatch(sub)) {
                 const data = fs.readFileSync(filePath, "utf8");
@@ -48,7 +53,7 @@ const patterns = [
         }
     };
 
-    dfs("");
+    dfs("", Infinity);
 
     result.total = totalN;
     console.log("Total:", totalN);
