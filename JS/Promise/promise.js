@@ -159,12 +159,7 @@ class Promise {
   then(onFulfilled, onRejected) {
     onFulfilled = typeof onFulfilled === "function" ? onFulfilled : (v) => v;
     //因为错误的值要让后面访问到，所以这里也要跑出个错误，不然会在之后 then 的 resolve 中捕获
-    onRejected =
-      typeof onRejected === "function"
-        ? onRejected
-        : (err) => {
-            throw err;
-          };
+    onRejected = typeof onRejected === "function" ? onRejected : (err) => { throw err };
     let promise2 = new Promise((resolve, reject) => {
       if (this.status === FULFILLED) {
         //Promise/A+ 2.2.2
