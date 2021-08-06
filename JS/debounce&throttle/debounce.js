@@ -10,6 +10,8 @@ function getUserAction(e) {
 appDiv.onmousemove = debounce(getUserAction, 500, true);
 // appDiv.onmousemove = getUserAction;
 
+// 函数防抖就是法师发技能的时候要读条，技能读条没完再按技能就会重新读条。
+
 function debounce(func, wait, immediate) {
   let timeout, result;
 
